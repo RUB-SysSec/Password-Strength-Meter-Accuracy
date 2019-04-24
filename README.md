@@ -24,6 +24,9 @@ As the crawler uses the [**Selenium framework**](https://www.seleniumhq.org/), w
 In a post-processing step we use a small **Python** script to prepare the crawled data for the evaluation step in **R**.
 In the final step, we calculate the weighted Spearman correlation to estimate the accuracy of the crawled meter.
 
+### Obtaining an Ideal _Reference_
+While this repository contains some example passwords from the LinkedIn leak, a more evolved evaluation requires more than one ground truth. The easiest way to obtain such references is by sampling passwords from password leaks, and evaluating them using [CMU's Password Guessability Service (PGS)](https://pgs.ece.cmu.edu/). For more details please refer to [the paper](https://www.mobsec.ruhr-uni-bochum.de/forschung/veroeffentlichungen/accuracy-password-strength-meters/).
+
 ### Installation
 
 To keep the guide short, we assume the use of a [Ubuntu-based OS](https://xubuntu.org/release/18-04/).
