@@ -130,7 +130,17 @@ Navigate to `src/meter/01_zxcvbn/` and open `index.html` with your browser. Copy
 
 `file:///home/<username>/PSMA/src/meter/01_zxcvbn/index.html`
 
-We make sure that the Python virtual environment is activated, and we change the current directory to `src/crawl/01_zxcvbn/`.
+Now edit `zxcvbn_chrome.py` or `zxcvbn_firefox.py` and change the path according to your environment.
+
+```
+...
+    driver.get('file:///home/<username>/PSMA/src/meter/01_zxcvbn/index.html')
+...
+```
+
+Save your edits!
+
+Next, we make sure that the Python virtual environment is activated, and we change the current directory to `src/crawl/01_zxcvbn/`.
 
 ```
 $ cd src/crawl/01_zxcvbn/
