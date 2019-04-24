@@ -38,24 +38,12 @@ Check out the source code via:
 
 ```
 .
-├── docs
-│   ├── CHANGELOG.md
-│   ├── LICENSE
-│   └── screenshots
-│       └── zxcvbn.gif
-├── README.md
 └── src
     ├── analyze
     │   ├── 01_build_r_file.py
-    │   ├── 02_corr-comp.r
-    │   ├── result_offline.csv
-    │   └── result_online.csv
+    │   └── 02_corr-comp.r
     ├── crawl
     │   └── 01_zxcvbn
-    │       ├── 0_linkedin.offline.pw_guess_number_result.txt
-    │       ├── 0_linkedin.offline.pw_score_result.txt
-    │       ├── 0_linkedin.online.pw_guess_number_result.txt
-    │       ├── 0_linkedin.online.pw_score_result.txt
     │       ├── zxcvbn_chrome.py
     │       └── zxcvbn_firefox.py
     ├── datasets
@@ -71,9 +59,7 @@ Check out the source code via:
     │       └── 3_linkedin.online.withcount
     └── meter
         └── 01_zxcvbn
-            ├── eval.js
             ├── index.html
-            ├── jquery-3.3.1.min.js
             └── zxcvbn_v4.4.2.js
 ```
 #### Step 0: Preparation
