@@ -2,7 +2,7 @@ Measuring the Accuracy of Password Strength Meters
 ================================
 
 Password strength meters are an important tool to help users choose more secure passwords.
-Strength meters can only then provide reasonable guidance when they are accurate, i.e., their score correctly reflects password strength.
+However, strength meters can only then provide reasonable guidance when they are accurate, i.e., their score correctly reflects password strength.
 A strength meter with low accuracy may do more harm than good and guide the user to choose passwords with a high score but actual low security.
 
 The preferred method to measure the accuracy of a strength meter is to compare it to an ideal _reference_, measuring the similarity between the reference and _the meter output_.
@@ -78,6 +78,8 @@ Check out the source code via:
 ```
 #### Step 0: Preparation
 
+Before we start, we need to install some dependencies, like Python PIP, Selenium, and a WebDriver for your browser.
+
 ###### Configuring Python and Installing Selenium
 First we install Python [Package Installer](https://pip.pypa.io/en/stable/) (PIP) and the Python [virtual environment](https://docs.python.org/2.7/glossary.html#term-virtual-environment) runtime environment.
 
@@ -125,7 +127,6 @@ For most web-based password strength meters we need the Selenium framework and a
 Our tutorial includes an example based on the [zxcvbn strength meter](https://github.com/dropbox/zxcvbn).
 
 While we try to explain everything in detail, we skip the part on how to install a web browser on your system, just use [Google Chrome](https://www.google.com/chrome/) or [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/).
-Before we start, we need to install some dependencies, like Python PIP, Selenium, and a WebDriver for your browser.
 
 Note: If your meter is not a web-based strength meter, you need write some custom function that will output strength estimates for a given list of passwords found in the `datasets` folder.
 
@@ -133,7 +134,7 @@ Navigate to `src/meter/01_zxcvbn/` and open `index.html` with your browser. Copy
 
 `file:///home/<username>/PSMA/src/meter/01_zxcvbn/index.html`
 
-Now edit `zxcvbn_chrome.py` or `zxcvbn_firefox.py` and change the path according to your environment.
+Now edit `src/crawl/01_zxcvbn/zxcvbn_chrome.py` or `src/crawl/01_zxcvbn/zxcvbn_firefox.py` and change the path according to your environment.
 
 ```
 ...
@@ -180,19 +181,23 @@ count  strength  weight    zxcvbn_guess_number password zxcvbn_score
 
 #### Step 3: Evaluation using R
 
-Start R and run:
+Start R, e.g., by running RStudio or `R`:
 
 `> install.packages("wCorr")`
 
 This installs the support for Weighted Correlations in R.
 
-In R run `02_corr-comp.r`.
+In R run `02_corr-comp.r`, e.g., by running:
+
+`$ Rscript 02_corr-comp.r`
 
 The output for `result_online.csv`:
 ```
 zxcvbn_guess_number 0.738
 zxcvbn_score        0.382
 ```
+
+Now edit `02_corr-comp.r` and change the input file to `"result_offline.csv"`.
 
 The output for `result_offline.csv`:
 ```
