@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Meta -->
+        <title>zxcvbn Test</title>
+        <meta charset="utf-8">
+        <script src="./jquery-3.3.1.min.js"></script>
+        <script src="./zxcvbn_v4.4.2.js"></script>
+        <script src="./eval.js"></script>
+    </head>
+    <body>
+        <h1>Heuristics: zxcvbn Password Strength Meter (PSM)</h1>
+        <p>
+            In 2012 Daniel Wheeler proposed a PSM in a Dropbox Inc. <a href="https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/" target="_blank">blog post</a>.
+        </p>
+        <p>
+            It is based on advanced heuristics that extend the LUDS approach by including dictionaries, considering leetspeak transformations, keyboard walks, and more.
+        </p>
+        <p>
+            Due to its easy-to-integrate design, it is deployed on many websites and used in password managers.
+        </p>
+        <p>
+            The meter was recently backed up by <a href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler" target="_blank">scientific analysis</a>.
+        </p>
+        <p>
+            Download the latest version <a href="https://github.com/dropbox/zxcvbn/releases" target="_blank">here</a>.
+        </p>
+        <form id="myForm">
+            Password:<br>
+            <input id="password" type="text" value=""><br>
+            Strength: Guess number (1-&infin;)<br>
+            <span id="guess_number"></span><br>
+            Strength: Score (1-4)<br>
+            <span id="score"></span><br>
+            <input id="submit" type="submit" value="Calculate">
+        </form>
+        <h1>Binning in zxcvbn (v4.4.2)</h1>
+        <pre>
+/* Rule (Simplified)
+    guess_number < 1e3   --> 0
+    guess_number < 1e6   --> 1
+    guess_number < 1e8   --> 2
+    guess_number < 10e10 --> 3
+    else                 --> 4
+*/
+
+/* JavaScript */
+function guesses_to_score(guess_number) {
+    var t;
+    return t = 5, guess_number < 1e3 + t ? 0 : guess_number < 1e6 + t ? 1 : guess_number < 1e8 + t ? 2 : guess_number < 1e10 + t ? 3 : 4
+};
+
+''' Python '''
+def guesses_to_score(guess_number):
+    t = 5.0
+    if guess_number < (1e3 + t):
+        return 0
+    if guess_number >= (1e3 + t) and guess_number < (1e6 + t):
+        return 1
+    if guess_number >= (1e6 + t) and guess_number < (1e8 + t):
+        return 2
+    if guess_number >= (1e8 + t) and guess_number < (1e10 + t):
+        return 3
+    return 4
+
+/* Evaluation (in JavaScript)
+    guesses_to_score(0) --> 0
+    guesses_to_score(1) --> 0
+    guesses_to_score(1004) --> 0
+    guesses_to_score(1005) --> 1
+    guesses_to_score(1000004) --> 1
+    guesses_to_score(1000005) --> 2
+    guesses_to_score(100000004) --> 2
+    guesses_to_score(100000005) --> 3
+    guesses_to_score(10000000004) --> 3
+    guesses_to_score(10000000005) --> 4
+    guesses_to_score(1000000000000000000000000000000000005) --> 4
+*/
+        </pre>
+    </body>
+</html>
