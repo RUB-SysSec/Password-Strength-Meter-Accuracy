@@ -35,15 +35,43 @@ Check out the source code via:
 
 ```
 .
-├── alphabetCreator
 ├── docs
-│   ├── CHANGELOG.md
-│   ├── LICENSE
-│   └── screenshots
-├── enumNG
+│   ├── CHANGELOG.md
+│   ├── LICENSE
+│   └── screenshots
+│       └── zxcvbn.gif
+├── README.md
 └── src
-    ├── alphabetCreator.c
-    ...
+    ├── analyze
+    │   ├── 01_build_r_file.py
+    │   ├── 02_corr-comp.r
+    │   ├── result_offline.csv
+    │   └── result_online.csv
+    ├── crawl
+    │   └── 01_zxcvbn
+    │       ├── 0_linkedin.offline.pw_guess_number_result.txt
+    │       ├── 0_linkedin.offline.pw_score_result.txt
+    │       ├── 0_linkedin.online.pw_guess_number_result.txt
+    │       ├── 0_linkedin.online.pw_score_result.txt
+    │       ├── zxcvbn_chrome.py
+    │       └── zxcvbn_firefox.py
+    ├── datasets
+    │   ├── offline
+    │   │   ├── 0_linkedin.offline.pw
+    │   │   ├── 1_linkedin.offline.strength
+    │   │   ├── 2_linkedin.offline.weight
+    │   │   └── 3_linkedin.offline.withcount
+    │   └── online
+    │       ├── 0_linkedin.online.pw
+    │       ├── 1_linkedin.online.strength
+    │       ├── 2_linkedin.online.weight
+    │       └── 3_linkedin.online.withcount
+    └── meter
+        └── 01_zxcvbn
+            ├── eval.js
+            ├── index.html
+            ├── jquery-3.3.1.min.js
+            └── zxcvbn_v4.4.2.js
 ```
 #### Step 0: Preparation
 
