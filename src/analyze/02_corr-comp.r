@@ -5,7 +5,7 @@ merged <- read.delim("result_online.csv", header = TRUE, quote = "")
 # config used data and methods here
 LIST_DATA   = c("zxcvbn_guess_number", "zxcvbn_score")
 LIST_METHOD = c("wspearman")
-REF    = merged$strength # used as refernce
+REF    = merged$strength # used as reference
 WEIGHT = merged$weight   # used as weight
 ###########################
 results = matrix(numeric(0),

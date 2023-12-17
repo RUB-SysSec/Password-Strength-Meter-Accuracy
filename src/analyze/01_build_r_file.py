@@ -3,31 +3,32 @@
 
 '''
 :author: Maximilian Golla
-:contact: maximilian.golla@rub.de
-:version: 0.0.2, 2019-04-24
+:contact: golla@cispa.de
+:version: 0.0.3, 2023-12-17
 '''
 
-import sys, re
+import sys
+import re
 from collections import OrderedDict
 
 def read_file(filename):
     data = []
-    with open(filename, 'r') as inputfile:
+    with open(filename, 'r', encoding='utf-8') as inputfile:
         inputfile.readline() # skip header
         for line in inputfile:
             try:
                 line = line.rstrip('\r\n')
                 data.append(line)
             except Exception as e:
-                sys.stderr.write("Error: {} - {}\n".format(e, line))
+                sys.stderr.write(f"Error: {e} - {line}\n")
     return data
 
 def _prepare_dict(strength, weight, withcount):
-    pw_re = re.compile('^\s*[0-9]*\s')
-    occ_re = re.compile('^\s*[0-9]*')
+    pw_re = re.compile(r'^\s*[0-9]*\s')
+    occ_re = re.compile(r'^\s*[0-9]*')
 
     output = OrderedDict()
-    for i in xrange(0, len(strength)):
+    for i in range(0, len(strength)):
         p = withcount[i].replace(pw_re.findall(withcount[i])[0], '')
         s = float(strength[i])
         w = float(weight[i])
@@ -62,11 +63,9 @@ def build_offline():
     return output
 
 def write_result(filename, result):
-    with open(filename, 'w') as outputfile:
+    with open(filename, 'w', encoding='utf-8') as outputfile:
         # Write header
-        header = []
-        for title in result.itervalues().next():
-            header.append(title)
+        header = list(result[0].keys())
         outputfile.write("{}\n".format("\t".join(header)))
         # Write data
         line_number = 1

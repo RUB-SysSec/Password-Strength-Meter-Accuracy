@@ -6,31 +6,36 @@ However, strength meters can only then provide reasonable guidance when they are
 A strength meter with low accuracy may do more harm than good and guide the user to choose passwords with a high score but actual low security.
 
 The preferred method to measure the accuracy of a strength meter is to compare it to an ideal _reference_, measuring the similarity between the reference and _the meter output_.
-In our work, [On the Accuracy of Password Strength Meters](https://www.mobsec.ruhr-uni-bochum.de/forschung/veroeffentlichungen/accuracy-password-strength-meters/), we found the **weighted [Spearman's rank correlation coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient)** to be a useful candidate to measure the accuracy of a strength meter compared to the ideal reference.
+In our work, [On the Accuracy of Password Strength Meters](https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf), we found the **weighted [Spearman's rank correlation coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient)** to be a useful candidate to measure the accuracy of a strength meter compared to the ideal reference.
 
 In this repository you find the necessary code to crawl and evaluate a password strength meter's accuracy.
 We hope that this code is helpful for meter developers to improve their implementation.
 
+Related Work
+-----------
+* Follow-up work (2023): [No Single Silver Bullet: Measuring the Accuracy of Password Strength Meters](https://www.usenix.org/conference/usenixsecurity23/presentation/wang-ding-silver-bullet)
+* Prior work (2014): [From Very Weak to Very Strong: Analyzing Password-Strength Meters](https://www.ndss-symposium.org/ndss2014/programme/very-weak-very-strong-analyzing-password-strength-meters/)
+
 Project Website
 -----------
-The original paper, a recording of the talk, the slides, and more information can be found on:
+The original paper, a recording of the talk, the slides, and more information can be found at:
 
 * https://password-meter-comparison.org
 
 User Guide
 -----------
 The code consists of three parts: `crawler`, `post-processing`, and `evaluation`.
-As the crawler uses the [**Selenium framework**](https://www.seleniumhq.org/), we automate a headless Google Chrome/Mozilla Firefox browser to crawl a meter using some predefined list of passwords.
+As the crawler uses the [**Selenium framework**](https://www.seleniumhq.org), we automate a headless Google Chrome/Mozilla Firefox browser to crawl a meter using some predefined list of passwords.
 In a post-processing step we use a small **Python** script to prepare the crawled data for the evaluation step in **R**.
 In the final step, we calculate the weighted Spearman correlation to estimate the accuracy of the crawled meter.
 
 ### Obtaining an Ideal _Reference_
-While this repository contains some example passwords from the LinkedIn leak, a more evolved evaluation requires more than one ground truth. The easiest way to obtain such references is by sampling passwords from password leaks, and evaluating them using [CMU's Password Guessability Service (PGS)](https://pgs.ece.cmu.edu/). For more details please refer to [the paper](https://www.mobsec.ruhr-uni-bochum.de/forschung/veroeffentlichungen/accuracy-password-strength-meters/).
+While this repository contains some example passwords from the LinkedIn leak, a more evolved evaluation requires more than one ground truth. The easiest way to obtain such references is by sampling passwords from password leaks, and evaluating them using [CMU's Password Guessability Service (PGS)](https://pgs.ece.cmu.edu). For more details please refer to [the paper](https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf).
 
 ### Installation
 
-To keep the guide short, we assume the use of a [Ubuntu-based OS](https://xubuntu.org/release/18-04/).
-All `Python` code snippets were tested using **2.7**, all `R` scripts assume version **3.4** or later.
+To keep the guide short, we assume the use of [Ubuntu 22.04 LTS](https://xubuntu.org/release/22-04/).
+All `Python` code snippets were tested using **3.10**, all `R` scripts assume version **4.3** or later.
 
 Check out the source code via:
 
@@ -67,13 +72,13 @@ Check out the source code via:
 Before we start, we need to install some dependencies, like Python PIP, Selenium, and a WebDriver for your browser.
 
 ###### Configuring Python and Installing Selenium
-First we install Python [Package Installer](https://pip.pypa.io/en/stable/) (PIP) and the Python [virtual environment](https://docs.python.org/2.7/glossary.html#term-virtual-environment) runtime environment.
+First we install Python [Package Installer](https://pip.pypa.io/en/stable/) (PIP) and the Python [virtual environment](https://docs.python.org/3.10/glossary.html#term-virtual-environment) runtime environment.
 
-`$ sudo apt-get install python-pip virtualenv`
+`$ sudo apt-get install python3-pip python3-virtualenv`
 
 We start by creating a new Python virtual environment that we just use for this project.
 
-`$ virtualenv -p /usr/bin/python2.7 venv`
+`$ virtualenv -p /usr/bin/python3 venv`
 
 Next, we activate the Python virtual environment.
 
@@ -85,27 +90,19 @@ Now, we install selenium.
 
 ###### Installing the WebDriver
 
-To allow Selenium to communicate and automate your browser, we need to install your web browser's driver.
+By default, ***Ubuntu 22.04 LTS*** ships [Firefox as a Snap package](https://snapcraft.io/firefox), which causes a lot of [issues](https://github.com/SeleniumHQ/selenium/issues/11028) with the geckodriver.
 
-* The WebDriver for Google Chrome can be found [here](http://chromedriver.chromium.org/downloads).
-* The WebDriver for Mozilla Firefox can be found [here](https://github.com/mozilla/geckodriver/releases).
+We need to replace Firefox Snap with the Debian (deb) package, for this you best follow [the detailed tutorial from OMG! Ubuntu!](https://www.omgubuntu.co.uk/2022/04/how-to-install-firefox-deb-apt-ubuntu-22-04).
 
-Next, download and install the driver you need depending on the browser you like to use!
+To allow Selenium to communicate and automate your browser, we also need to install your web browser's driver.
 
-Below is an example for Google Chrome:
-
-```
-$ wget https://chromedriver.storage.googleapis.com/<release>/chromedriver_linux64.zip
-$ unzip chromedriver_linux64.zip
-$ chmod +x chromedriver
-$ sudo mv chromedriver /usr/local/bin/
-```
+`(venv) $ pip install webdriver-manager`
 
 ###### Installing R
 
-Install the [R open-source programming language](https://www.digitalocean.com/community/tutorials/how-to-install-r-on-ubuntu-18-04-quickstart) on your Ubuntu machine.
+Install the [R open-source programming language](https://www.digitalocean.com/community/tutorials/how-to-install-r-on-ubuntu-22-04) on your Ubuntu machine.
 
-Optional: Install [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/#download) (Open Source License) for more convenience.
+Optional: Install [RStudio Desktop](https://posit.co/download/rstudio-desktop/) for more convenience.
 
 #### Step 1: Crawling the Meter
 In a first step, we need to get the estimates from the strength meter for a given set of passwords.
@@ -157,17 +154,25 @@ It will produce 2 files:
 
 Contents of `result_online.csv`:
 ```
-count  strength  weight    zxcvbn_guess_number password zxcvbn_score
-30.0  -1044164.0 1044164.0 2.0                 123456   0.0
- 6.0  -193001.0  193001.0  22802.0             linkedin 1.0
- 4.0  -176120.0  176120.0  3.0                 password 0.0
- 4.0  -78720.0   78720.0   9.0                 111111   0.0
+password      strength       weight    count    zxcvbn_guess_number    zxcvbn_score
+123456      -1044164.0    1044164.0     30.0                    2.0             0.0
+linkedin     -193001.0     193001.0      6.0                22802.0             1.0
+password     -176120.0     176120.0      4.0                    3.0             0.0
+111111        -78720.0      78720.0      4.0                    9.0             0.0
 ...
 ```
 
 #### Step 3: Evaluation using R
 
-Start R, e.g., by running RStudio or `R`:
+On Ubuntu 22.04 we need to install GNU Fortran
+
+`$ sudo apt install gfortran`
+
+and the Linear Algebra PACKage (LAPACK) and the Basic Linear Algebra Subprograms (BLAS):
+
+`$ sudo apt-get install libblas-dev liblapack-dev`
+
+Next, you can start R, e.g., by running RStudio or `R`:
 
 `> install.packages("wCorr")`
 
@@ -179,22 +184,30 @@ In R run `02_corr-comp.r`, e.g., by running:
 
 The output for `result_online.csv`:
 ```
-zxcvbn_guess_number 0.738
-zxcvbn_score        0.382
+zxcvbn_guess_number    0.802
+zxcvbn_score           0.376
+
+# -1.0 means strong negative correlation; meter works but 'strong' passwords are in fact 'weak' and the other way round
+#  0.0 means no correlation; meter is randomly guessing, and not estimating password strength
+#  1.0 means strong positive correlation; meter works perfectly
 ```
 
 Now edit `02_corr-comp.r` and change the input file to `"result_offline.csv"`.
 
 The output for `result_offline.csv`:
 ```
-zxcvbn_guess_number 0.896 	
-zxcvbn_score        0.689
+xcvbn_guess_number    0.908
+zxcvbn_score          0.670
+
+# -1.0 means strong negative correlation; meter works but 'strong' passwords are in fact 'weak' and the other way round
+#  0.0 means no correlation; meter is randomly guessing, and not estimating password strength
+#  1.0 means strong positive correlation; meter works perfectly
 ```
 
 FAQ
 ---
 
-* The crawling doesn't work!
+* The crawling does not work!
 Make sure you have activated the virtual environment. Check for the presence of the `(venv)` in front of your prompt.
 Make sure you have the latest WebDriver installed on your system.
 
@@ -216,5 +229,5 @@ The license can be found [here](https://www.apache.org/licenses/LICENSE-2.0).
 
 Contact
 -------
-Visit our [website](https://www.mobsec.rub.de) and follow us on [Twitter](https://twitter.com/hgi_bochum).
+Visit our [website](https://informatik.rub.de/mobsec/) and follow us on [Twitter](https://twitter.com/hgi_bochum).
 If you are interested in passwords, consider to contribute and to attend the [International Conference on Passwords (PASSWORDS)](https://passwordscon.org).

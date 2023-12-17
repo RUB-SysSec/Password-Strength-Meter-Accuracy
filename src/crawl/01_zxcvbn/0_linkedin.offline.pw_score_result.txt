@@ -1268,7 +1268,7 @@ zxcvbn_score_linkedin
 3
 1
 2
-2
+1
 1
 1
 3
@@ -2800,7 +2800,7 @@ zxcvbn_score_linkedin
 3
 1
 2
-1
+2
 0
 2
 1
@@ -3724,7 +3724,7 @@ zxcvbn_score_linkedin
 2
 1
 2
-1
+2
 2
 1
 2
@@ -7489,7 +7489,7 @@ zxcvbn_score_linkedin
 2
 0
 1
-2
+1
 3
 1
 2
@@ -7837,7 +7837,7 @@ zxcvbn_score_linkedin
 4
 1
 4
-1
+2
 4
 2
 3
@@ -8034,8 +8034,8 @@ zxcvbn_score_linkedin
 0
 4
 4
-2
 1
+1
 2
 4
 4
@@ -8335,7 +8335,7 @@ zxcvbn_score_linkedin
 4
 4
 4
-2
+1
 4
 2
 3
@@ -8405,7 +8405,7 @@ zxcvbn_score_linkedin
 1
 1
 4
-2
+1
 4
 2
 4
@@ -8491,7 +8491,7 @@ zxcvbn_score_linkedin
 4
 3
 4
-3
+2
 4
 4
 2
