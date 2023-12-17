@@ -1,4 +1,4 @@
-zxcvbn_score_linkedin
+zxcvbn_score_000webhost
 0
 0
 1

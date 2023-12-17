@@ -42,9 +42,9 @@ def main():
         print(f"Error: Element with id='submit' was not found within {delay} seconds.")
 
     fog = open("./"+str(sys.argv[1].split('/')[-1])+"_guess_number_result.txt", "w", encoding="utf-8")
-    fog.write("zxcvbn_guess_number_linkedin\n")
+    fog.write("zxcvbn_guess_number_"+str(sys.argv[1].split('/')[-1])+"\n")
     fos = open("./"+str(sys.argv[1].split('/')[-1])+"_score_result.txt", "w", encoding="utf-8")
-    fos.write("zxcvbn_score_linkedin\n")
+    fos.write("zxcvbn_score_"+str(sys.argv[1].split('/')[-1])+"\n")
     with open(str(sys.argv[1]), "r", encoding="utf-8") as inputfile:
         inputfile.readline() # skip header
         for line in inputfile:

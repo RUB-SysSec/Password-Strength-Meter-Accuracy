@@ -1,4 +1,4 @@
-zxcvbn_score_linkedin
+zxcvbn_score_rockyou
 0
 0
 0
