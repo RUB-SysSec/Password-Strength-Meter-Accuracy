@@ -30,7 +30,7 @@ In a post-processing step we use a small **Python** script to prepare the crawle
 In the final step, we calculate the weighted Spearman correlation to estimate the accuracy of the crawled meter.
 
 ### Obtaining an Ideal _Reference_
-While this repository contains some example passwords from the LinkedIn leak, a more evolved evaluation requires more than one ground truth. The easiest way to obtain such references is by sampling passwords from password leaks, and evaluating them using [CMU's Password Guessability Service (PGS)](https://pgs.ece.cmu.edu). For more details please refer to [the paper](https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf).
+While this repository contains some example passwords from the RockYou, LinkedIn, and 000Webhost, a more evolved evaluation requires more than one ground truth. The easiest way to obtain such references is by sampling passwords from password leaks, and evaluating them using [CMU's Password Guessability Service (PGS)](https://pgs.ece.cmu.edu). For more details please refer to [the paper](https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf).
 
 ### Installation
 
@@ -42,29 +42,71 @@ Check out the source code via:
 `$ git clone https://github.com/RUB-SysSec/Password-Strength-Meter-Accuracy.git PSMA`
 
 ```
-.
+├── README.md
 └── src
     ├── analyze
     │   ├── 01_build_r_file.py
-    │   └── 02_corr-comp.r
+    │   ├── 02_corr-comp.r
+    │   ├── result_000webhost_offline.csv
+    │   ├── result_000webhost_online.csv
+    │   ├── result_linkedin_offline.csv
+    │   ├── result_linkedin_online.csv
+    │   ├── result_rockyou_offline.csv
+    │   └── result_rockyou_online.csv
     ├── crawl
     │   └── 01_zxcvbn
+    │       ├── 0_000webhost.offline.pw_guess_number_result.txt
+    │       ├── 0_000webhost.offline.pw_score_result.txt
+    │       ├── 0_000webhost.online.pw_guess_number_result.txt
+    │       ├── 0_000webhost.online.pw_score_result.txt
+    │       ├── 0_linkedin.offline.pw_guess_number_result.txt
+    │       ├── 0_linkedin.offline.pw_score_result.txt
+    │       ├── 0_linkedin.online.pw_guess_number_result.txt
+    │       ├── 0_linkedin.online.pw_score_result.txt
+    │       ├── 0_rockyou.offline.pw_guess_number_result.txt
+    │       ├── 0_rockyou.offline.pw_score_result.txt
+    │       ├── 0_rockyou.online.pw_guess_number_result.txt
+    │       ├── 0_rockyou.online.pw_score_result.txt
     │       ├── zxcvbn_chrome.py
     │       └── zxcvbn_firefox.py
     ├── datasets
     │   ├── offline
-    │   │   ├── 0_linkedin.offline.pw
-    │   │   ├── 1_linkedin.offline.strength
-    │   │   ├── 2_linkedin.offline.weight
-    │   │   └── 3_linkedin.offline.withcount
+    │   │   ├── 000webhost
+    │   │   │   ├── 0_000webhost.offline.pw
+    │   │   │   ├── 1_000webhost.offline.strength
+    │   │   │   ├── 2_000webhost.offline.weight
+    │   │   │   └── 3_000webhost.offline.withcount
+    │   │   ├── linkedin
+    │   │   │   ├── 0_linkedin.offline.pw
+    │   │   │   ├── 1_linkedin.offline.strength
+    │   │   │   ├── 2_linkedin.offline.weight
+    │   │   │   └── 3_linkedin.offline.withcount
+    │   │   └── rockyou
+    │   │       ├── 0_rockyou.offline.pw
+    │   │       ├── 1_rockyou.offline.strength
+    │   │       ├── 2_rockyou.offline.weight
+    │   │       └── 3_rockyou.offline.withcount
     │   └── online
-    │       ├── 0_linkedin.online.pw
-    │       ├── 1_linkedin.online.strength
-    │       ├── 2_linkedin.online.weight
-    │       └── 3_linkedin.online.withcount
+    │       ├── 000webhost
+    │       │   ├── 0_000webhost.online.pw
+    │       │   ├── 1_000webhost.online.strength
+    │       │   ├── 2_000webhost.online.weight
+    │       │   └── 3_000webhost.online.withcount
+    │       ├── linkedin
+    │       │   ├── 0_linkedin.online.pw
+    │       │   ├── 1_linkedin.online.strength
+    │       │   ├── 2_linkedin.online.weight
+    │       │   └── 3_linkedin.online.withcount
+    │       └── rockyou
+    │           ├── 0_rockyou.online.pw
+    │           ├── 1_rockyou.online.strength
+    │           ├── 2_rockyou.online.weight
+    │           └── 3_rockyou.online.withcount
     └── meter
         └── 01_zxcvbn
+            ├── eval.js
             ├── index.html
+            ├── jquery-3.7.1.min.js
             └── zxcvbn_v4.4.2.js
 ```
 #### Step 0: Preparation
@@ -132,10 +174,12 @@ Next, we make sure that the Python virtual environment is activated, and we chan
 ```
 $ cd src/crawl/01_zxcvbn/
 $ source ~/venv/bin/activate
-(venv) $ python zxcvbn_chrome.py ../../datasets/online/0_linkedin.online.pw
+(venv) $ python zxcvbn_chrome.py ../../datasets/online/linkedin/0_linkedin.online.pw
 ```
 
 ![Alt text](/docs/screenshots/zxcvbn.gif?raw=true "zxcvbn Crawling in Action")
+
+Next, repeat the crawling for the different datasets (`linkedin`, `000webhost`, `rockyou`) and the two scenarios (`online` and `offline`).
 
 #### Step 2: Post-Processing
 
@@ -148,11 +192,15 @@ $ cd src/analyze/
 $ python 01_build_r_file.py
 ```
 
-It will produce 2 files:
-* `result_online.csv`
-* `result_offline.csv`
+It will produce 6 files:
+* `result_rockyou_online.csv`
+* `result_rockyou_offline.csv`
+* `result_linkedin_online.csv`
+* `result_linkedin_offline.csv`
+* `result_000webhost_online.csv`
+* `result_000webhost_offline.csv`
 
-Contents of `result_online.csv`:
+Example: Contents of `result_linkedin_online.csv`:
 ```
 password      strength       weight    count    zxcvbn_guess_number    zxcvbn_score
 123456      -1044164.0    1044164.0     30.0                    2.0             0.0
@@ -178,30 +226,31 @@ Next, you can start R, e.g., by running RStudio or `R`:
 
 This installs the support for Weighted Correlations in R.
 
-In R run `02_corr-comp.r`, e.g., by running:
+Next, change `<username>` in the R script to the correct path:
+
+`setwd('/home/<username>/PSMA/src/analyze/')`
+
+Finally, in R, run `02_corr-comp.r`, e.g., by executing:
 
 `$ Rscript 02_corr-comp.r`
 
-The output for `result_online.csv`:
+The output should look like this:
 ```
-zxcvbn_guess_number    0.802
-zxcvbn_score           0.376
-
-# -1.0 means strong negative correlation; meter works but 'strong' passwords are in fact 'weak' and the other way round
-#  0.0 means no correlation; meter is randomly guessing, and not estimating password strength
-#  1.0 means strong positive correlation; meter works perfectly
-```
-
-Now edit `02_corr-comp.r` and change the input file to `"result_offline.csv"`.
-
-The output for `result_offline.csv`:
-```
-xcvbn_guess_number    0.908
-zxcvbn_score          0.670
-
-# -1.0 means strong negative correlation; meter works but 'strong' passwords are in fact 'weak' and the other way round
-#  0.0 means no correlation; meter is randomly guessing, and not estimating password strength
-#  1.0 means strong positive correlation; meter works perfectly
+zxcvbn_guess_number     rockyou      online      0.812
+zxcvbn_guess_number     linkedin     online      0.802
+zxcvbn_guess_number     000webhost   online      0.435
+zxcvbn_guess_number     rockyou      offline     0.772
+zxcvbn_guess_number     linkedin     offline     0.908
+zxcvbn_guess_number     000webhost   offline     0.904
+zxcvbn_score    rockyou      online      0.455
+zxcvbn_score    linkedin     online      0.376
+zxcvbn_score    000webhost   online      0.355
+zxcvbn_score    rockyou      offline     0.545
+zxcvbn_score    linkedin     offline     0.670
+zxcvbn_score    000webhost   offline     0.880
+> # -1.0 means strong negative correlation; meter works but 'strong' passwords are in fact 'weak' and the other way round
+> #  0.0 means no correlation; meter is randomly guessing, and not estimating password strength
+> #  1.0 means strong positive correlation; meter works perfectly
 ```
 
 FAQ

@@ -4,7 +4,7 @@
 '''
 :author: Maximilian Golla
 :contact: golla@cispa.de
-:version: 0.0.3, 2023-12-17
+:version: 0.0.4, 2023-12-17
 '''
 
 import sys
@@ -44,22 +44,22 @@ def _add_meter(output, meter_name, meter_result_file):
         i += 1
     return output
 
-def build_online():
-    strength = read_file("../datasets/online/1_linkedin.online.strength")
-    weight = read_file("../datasets/online/2_linkedin.online.weight")
-    withcount = read_file("../datasets/online/3_linkedin.online.withcount")
+def build_online(dataset_name):
+    strength = read_file(f"../datasets/online/{dataset_name}/1_{dataset_name}.online.strength")
+    weight = read_file(f"../datasets/online/{dataset_name}/2_{dataset_name}.online.weight")
+    withcount = read_file(f"../datasets/online/{dataset_name}/3_{dataset_name}.online.withcount")
     output = _prepare_dict(strength, weight, withcount)
-    output = _add_meter(output, "zxcvbn_guess_number", "../crawl/01_zxcvbn/0_linkedin.online.pw_guess_number_result.txt")
-    output = _add_meter(output, "zxcvbn_score", "../crawl/01_zxcvbn/0_linkedin.online.pw_score_result.txt")
+    output = _add_meter(output, "zxcvbn_guess_number", f"../crawl/01_zxcvbn/0_{dataset_name}.online.pw_guess_number_result.txt")
+    output = _add_meter(output, "zxcvbn_score", f"../crawl/01_zxcvbn/0_{dataset_name}.online.pw_score_result.txt")
     return output
 
-def build_offline():
-    strength = read_file("../datasets/offline/1_linkedin.offline.strength")
-    weight = read_file("../datasets/offline/2_linkedin.offline.weight")
-    withcount = read_file("../datasets/offline/3_linkedin.offline.withcount")
+def build_offline(dataset_name):
+    strength = read_file(f"../datasets/offline/{dataset_name}/1_{dataset_name}.offline.strength")
+    weight = read_file(f"../datasets/offline/{dataset_name}/2_{dataset_name}.offline.weight")
+    withcount = read_file(f"../datasets/offline/{dataset_name}/3_{dataset_name}.offline.withcount")
     output = _prepare_dict(strength, weight, withcount)
-    output = _add_meter(output, "zxcvbn_guess_number", "../crawl/01_zxcvbn/0_linkedin.offline.pw_guess_number_result.txt")
-    output = _add_meter(output, "zxcvbn_score", "../crawl/01_zxcvbn/0_linkedin.offline.pw_score_result.txt")
+    output = _add_meter(output, "zxcvbn_guess_number", f"../crawl/01_zxcvbn/0_{dataset_name}.offline.pw_guess_number_result.txt")
+    output = _add_meter(output, "zxcvbn_score", f"../crawl/01_zxcvbn/0_{dataset_name}.offline.pw_score_result.txt")
     return output
 
 def write_result(filename, result):
@@ -74,10 +74,15 @@ def write_result(filename, result):
             line_number += 1
 
 def main():
-    result = build_online()
-    write_result("result_online.csv", result)
-    result = build_offline()
-    write_result("result_offline.csv", result)
+    datasets = ['linkedin', '000webhost', 'rockyou']
+    try:
+        for dataset_name in datasets:
+            result = build_online(dataset_name)
+            write_result(f"result_{dataset_name}_online.csv", result)
+            result = build_offline(dataset_name)
+            write_result(f"result_{dataset_name}_offline.csv", result)
+    except Exception as e:
+        sys.stderr.write(f"Error: {e} - {dataset_name}\n")
 
 if __name__ == '__main__':
     main()

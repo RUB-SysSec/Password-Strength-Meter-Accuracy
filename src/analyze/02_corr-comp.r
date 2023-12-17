@@ -1,33 +1,34 @@
 rm(list = ls()) # clean workspace
-library(wCorr)
-# read data
-merged <- read.delim("result_online.csv", header = TRUE, quote = "")
-# config used data and methods here
-LIST_DATA   = c("zxcvbn_guess_number", "zxcvbn_score")
-LIST_METHOD = c("wspearman")
-REF    = merged$strength # used as reference
-WEIGHT = merged$weight   # used as weight
-###########################
-results = matrix(numeric(0),
-                 nrow = length(LIST_DATA),
-                 ncol = length(LIST_METHOD))
-# main loop
-row_index = 0
-for (COL in LIST_DATA) {
-  row_index = row_index + 1
-  cat(COL, "\t")
-  SAM = merged[, COL]
-  col_index = 0
-  for (METHOD in LIST_METHOD) {
-    col_index = col_index + 1
-    if (METHOD == "wspearman") {
-      C = weightedCorr(REF, SAM, method = "spearman", weights = WEIGHT)
-    } else{
-      C = -1
+library(wCorr) # install.packages("wCorr")
+
+# configuration
+setwd('/home/<username>/PSMA/src/analyze/') # add username
+datasets <- list("rockyou", "linkedin", "000webhost")
+scenarios <- list("online", "offline")
+meters <- list("zxcvbn_guess_number", "zxcvbn_score")
+methods = c("wspearman") # recommended
+
+# Loop
+for (meter in meters) {
+    for (s in scenarios) {
+        for (d in datasets) {
+            # read prepared data from disk
+            merged <- read.delim(paste("result_",d,"_",s,".csv",sep = ""), header = TRUE, quote = "")
+            reference = merged$strength # used as reference
+            weight    = merged$weight   # used as weight
+            cat(meter, "\t")
+            SAM = merged[, meter]
+            for (method in methods) {
+                if (method == "wspearman") {
+                    C = weightedCorr(reference, SAM, method = "spearman", weights = weight)
+                } else{
+                    C = -20
+                }
+                cat(d, "\t", s, "\t", format(round(C, digits = 3), nsmall= 3)) # output to stdout
+            }
+            cat("\n")
+        }
     }
-    cat(round(C, digits = 3), "\t") # output to stdout
-  }
-  cat("\n")
 }
 # -1.0 means strong negative correlation; meter works but 'strong' passwords are in fact 'weak' and the other way round
 #  0.0 means no correlation; meter is randomly guessing, and not estimating password strength
