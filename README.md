@@ -140,6 +140,8 @@ To allow Selenium to communicate and automate your browser, we also need to inst
 
 `(venv) $ pip install webdriver-manager`
 
+The examples in this repo are for Google Chrome and Mozilla Firefox, if you use **another browser** (Brave, Chromium, Edge, Opera) have a look [here](https://github.com/SergeyPirogov/webdriver_manager#use-with-chromium).
+
 ###### Installing R
 
 Install the [R open-source programming language](https://www.digitalocean.com/community/tutorials/how-to-install-r-on-ubuntu-22-04) on your Ubuntu machine.
